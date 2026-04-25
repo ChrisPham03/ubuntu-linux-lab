@@ -1,0 +1,23 @@
+services:
+  ubuntu-learn:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ubuntu-linux-lab:latest
+    container_name: ubuntu-learn
+    hostname: ubuntu-lab
+    # Docker on Apple Silicon will auto-pick arm64. Uncomment to force:
+    # platform: linux/arm64
+    tty: true
+    stdin_open: true
+    working_dir: /home/learner/workspace
+    volumes:
+      # Your Mac folder <-> container workspace (files persist on your Mac)
+      - ./workspace:/home/learner/workspace
+      # Persistent home volume (shell history, configs you add, etc.)
+      - learner-home:/home/learner/data
+    # Keep container alive in the background even after you exit the shell
+    command: tail -f /dev/null
+
+volumes:
+  learner-home:

@@ -1,0 +1,49 @@
+# ============================================================================
+#  Starship prompt — Ubuntu Linux Lab
+#  Docs: https://starship.rs/config/
+# ============================================================================
+
+format = """
+[╭─](bold blue) $username$hostname$directory$git_branch$git_status$cmd_duration
+[╰─](bold blue)$character """
+
+add_newline = true
+
+[username]
+show_always = true
+style_user = "bold cyan"
+style_root = "bold red"
+format = "[$user]($style)"
+
+[hostname]
+ssh_only = false
+style = "bold green"
+format = "[@$hostname]($style) "
+
+[directory]
+style = "bold yellow"
+truncation_length = 4
+truncate_to_repo = false
+format = "[$path]($style)[$read_only]($read_only_style) "
+read_only = " 🔒"
+
+[git_branch]
+symbol = " "
+style = "bold purple"
+format = "[$symbol$branch]($style) "
+
+[git_status]
+style = "bold red"
+format = "([\\[$all_status$ahead_behind\\]]($style) )"
+
+[cmd_duration]
+min_time = 2_000
+style = "bold dimmed white"
+format = "took [$duration]($style) "
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol   = "[✗](bold red)"
+
+[line_break]
+disabled = false
