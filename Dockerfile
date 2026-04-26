@@ -4,12 +4,17 @@ FROM ubuntu:24.04
 ARG DEBIAN_FRONTEND=noninteractive
 ARG USERNAME=learner
 
+# --- Restore manpages (Ubuntu container image ships minimized) --------------
+# The official ubuntu:24.04 image removes manpages and docs to stay small.
+# We restore them here so `man <cmd>` works for learning.
+RUN yes | unminimize || true
+
 # --- Core packages ----------------------------------------------------------
 RUN apt-get update && apt-get install -y --no-install-recommends \
     # Essentials
     sudo curl wget git ca-certificates gnupg lsb-release \
     # Editors & pagers
-    vim nano less man-db manpages manpages-dev \
+    vim nano less man-db manpages manpages-dev manpages-posix \
     # Networking tools
     iputils-ping net-tools dnsutils traceroute iproute2 \
     # System inspection
@@ -25,6 +30,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # Modern CLI tools available in apt
     bat fd-find ripgrep fzf zoxide \
     && locale-gen en_US.UTF-8 \
+    && rm -rf /var/lib/apt/lists/*
+
+# --- Repopulate manpages for already-installed core utilities ---------------
+# unminimize only restores docs going forward; reinstall key packages so
+# `man cat`, `man ls`, `man bash`, etc. work.
+RUN apt-get update && apt-get install -y --reinstall --no-install-recommends \
+    coreutils bash util-linux findutils grep sed gawk tar gzip \
     && rm -rf /var/lib/apt/lists/*
 
 # --- eza (modern `ls`) ------------------------------------------------------
